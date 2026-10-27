@@ -188,6 +188,8 @@ struct RTPDemuxContext {
     /* dynamic payload stuff */
     const RTPDynamicProtocolHandler *handler;
     PayloadContext *dynamic_protocol_context;
+    /* do not remap timestamps with RTCP sender reports (PRFT is still set) */
+    int no_rtcp_sync;
 };
 
 /**

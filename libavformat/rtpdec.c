@@ -647,7 +647,7 @@ static void finalize_packet(RTPDemuxContext *s, AVPacket *pkt, uint32_t timestam
         }
     }
 
-    if (s->last_sr.ntp_timestamp != AV_NOPTS_VALUE && s->ic->nb_streams > 1) {
+    if (s->last_sr.ntp_timestamp != AV_NOPTS_VALUE && s->ic->nb_streams > 1 && !s->no_rtcp_sync) {
         int64_t addend;
         int32_t delta_timestamp;
 

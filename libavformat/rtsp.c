@@ -97,6 +97,7 @@ const AVOption ff_rtsp_options[] = {
     { "listen", "wait for incoming connections", 0, AV_OPT_TYPE_CONST, {.i64 = RTSP_FLAG_LISTEN}, 0, 0, DEC, .unit = "rtsp_flags" },
     { "prefer_tcp", "try RTP via TCP first, if available", 0, AV_OPT_TYPE_CONST, {.i64 = RTSP_FLAG_PREFER_TCP}, 0, 0, DEC|ENC, .unit = "rtsp_flags" },
     { "satip_raw", "export raw MPEG-TS stream instead of demuxing", 0, AV_OPT_TYPE_CONST, {.i64 = RTSP_FLAG_SATIP_RAW}, 0, 0, DEC, .unit = "rtsp_flags" },
+    { "no_rtcp_sync", "do not remap timestamps with RTCP sender reports", 0, AV_OPT_TYPE_CONST, {.i64 = RTSP_FLAG_NO_RTCP_SYNC}, 0, 0, DEC, .unit = "rtsp_flags" },
     RTSP_MEDIATYPE_OPTS("allowed_media_types", "set media types to accept from the server"),
     { "min_port", "set minimum local UDP port", OFFSET(rtp_port_min), AV_OPT_TYPE_INT, {.i64 = RTSP_RTP_PORT_MIN}, 0, 65535, DEC|ENC },
     { "max_port", "set maximum local UDP port", OFFSET(rtp_port_max), AV_OPT_TYPE_INT, {.i64 = RTSP_RTP_PORT_MAX}, 0, 65535, DEC|ENC },
@@ -911,6 +912,7 @@ int ff_rtsp_open_transport_ctx(AVFormatContext *s, RTSPStream *rtsp_st)
                s->iformat) {
         RTPDemuxContext *rtpctx = rtsp_st->transport_priv;
         rtpctx->ssrc = rtsp_st->ssrc;
+        rtpctx->no_rtcp_sync = !!(rt->rtsp_flags & RTSP_FLAG_NO_RTCP_SYNC);
         if (rtsp_st->dynamic_handler) {
             ff_rtp_parse_set_dynamic_protocol(rtsp_st->transport_priv,
                                               rtsp_st->dynamic_protocol_context,
